@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>File Upload SPA</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h2>Upload File</h2>
+      <form id="uploadForm">
+        <input type="file" id="fileInput" name="file" required />
+        <button type="submit">Upload</button>
+      </form>
+    </div>
+    <div class="card">
+      <div class="file-list-section">
+      <h3>Uploaded Files</h3>
+      <table id="fileTable">
+        <thead>
+          <tr>
+            <th>File Name</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="fileList">
+          <!-- Files will be populated here -->
+           <tr>
+              <td>report_2021.pdf</td>
+              <td>
+                <button>Download</button>
+                <button class="delete">Delete</button>
+              </td>
+            </tr>
+            <tr>
+              <td>invoice_march.xlsx</td>
+              <td>
+                <button>Download</button>
+                <button class="delete">Delete</button>
+              </td>
+            </tr>
+            <tr>
+              <td>profile_picture.png</td>
+              <td>
+                <button>Download</button>
+                <button class="delete">Delete</button>
+              </td>
+            </tr>
+            <tr>
+              <td>data_export.csv</td>
+              <td>
+                <button>Download</button>
+                <button class="delete">Delete</button>
+              </td>
+            </tr>
+            <tr>
+              <td>summary.docx</td>
+              <td>
+                <button>Download</button>
+                <button class="delete">Delete</button>
+              </td>
+            </tr>
+            <tr>
+              <td>presentation_final.pptx</td>
+              <td>
+                <button>Download</button>
+                <button class="delete">Delete</button>
+              </td>
+            </tr>
+            <tr>
+              <td>project_plan.json</td>
+              <td>
+                <button>Download</button>
+                <button class="delete">Delete</button>
+              </td>
+            </tr>
+            <tr>
+              <td>logfile.log</td>
+              <td>
+                <button>Download</button>
+                <button class="delete">Delete</button>
+              </td>
+            </tr>
+            <tr>
+              <td>backup.zip</td>
+              <td>
+                <button>Download</button>
+                <button class="delete">Delete</button>
+              </td>
+            </tr>
+            <tr>
+              <td>notes.txt</td>
+              <td>
+                <button>Download</button>
+                <button class="delete">Delete</button>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+    </div>
+    
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
