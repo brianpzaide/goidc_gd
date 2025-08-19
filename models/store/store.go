@@ -15,10 +15,18 @@ type Models interface {
 	Close()
 }
 
-func New(dsn string) (Models, error) {
+func NewModel(dsn string) (Models, error) {
 	m, err := sqlite.NewSqliteModel(dsn)
 	if err != nil {
 		return nil, err
 	}
 	return m, nil
+}
+
+func NewSessionManager(dsn string) (*sqlite.SessionManagerApp, error) {
+	sm, err := sqlite.NewSessionManager(dsn)
+	if err != nil {
+		return nil, err
+	}
+	return sm, nil
 }
