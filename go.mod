@@ -2,4 +2,7 @@ module goidc_gd
 
 go 1.24.1
 
-require github.com/mattn/go-sqlite3 v1.14.32 // indirect
+require (
+	github.com/go-chi/chi/v5 v5.2.2
+	github.com/mattn/go-sqlite3 v1.14.32
+)
