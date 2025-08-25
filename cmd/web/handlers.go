@@ -14,7 +14,8 @@ var oauth_providers = map[string]string{
   &redirect_uri=http://localhost:4000/callback
   &response_type=code
   &scope=https://www.googleapis.com/auth/drive.file
-  &state=%s`,
+  &state=%s
+  &nonce=%s`,
 }
 
 func (app *application) displayLogin(w http.ResponseWriter, r *http.Request) {
@@ -35,7 +36,9 @@ func (app *application) handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	state := uuid.New().String()
+	nonce := uuid.New().String()
 	app.sessionManager.Put(r.Context(), "oidc_state", state)
+	app.sessionManager.Put(r.Context(), "nonce", nonce)
 	http.Redirect(w, r, fmt.Sprintf(auth_uri, app.clientID, state), http.StatusSeeOther)
 }
 
