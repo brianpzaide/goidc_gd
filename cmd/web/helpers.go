@@ -7,9 +7,24 @@ import (
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type envelope map[string]interface{}
+
+type googleClaims struct {
+	Email         string `json:"email"`
+	EmailVerified bool   `json:"email_verified"`
+	Name          string `json:"name"`
+	GivenName     string `json:"given_name"`
+	FamilyName    string `json:"family_name"`
+	Picture       string `json:"picture"`
+	Sub           string `json:"sub"`
+	Aud           string `json:"aud"`
+	Iss           string `json:"iss"`
+	jwt.RegisteredClaims
+}
 
 type templateData struct {
 	Username  string
@@ -82,4 +97,8 @@ func (app *application) readJSON(w http.ResponseWriter, r *http.Request, dst int
 		return errors.New("body must only contain a single json value")
 	}
 	return nil
+}
+
+func parseGoogleIDToken(idToken, expectedAudience string) (*googleClaims, error) {
+	return nil, nil
 }

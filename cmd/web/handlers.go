@@ -2,21 +2,23 @@ package main
 
 import (
 	"fmt"
+	service "goidc_gd/internal"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 )
 
-var oauth_providers = map[string]string{
-	"google": `https://accounts.google.com/o/oauth2/v2/auth?
+const grantType = "authorization_code"
+const redirectURL = "http://localhost:4000/callback"
+
+const authURL = `https://accounts.google.com/o/oauth2/v2/auth?
   client_id=%s
-  &redirect_uri=http://localhost:4000/callback
+  &redirect_uri=%s
   &response_type=code
   &scope=https://www.googleapis.com/auth/drive.file
   &state=%s
-  &nonce=%s`,
-}
+  &nonce=%s`
 
 func (app *application) displayLogin(w http.ResponseWriter, r *http.Request) {
 	w.Write(loginPage)
@@ -27,19 +29,11 @@ func (app *application) handleLogin(w http.ResponseWriter, r *http.Request) {
 	// Store this state securely and tied to the user’s browser session(secured http only cookie)
 	// redirect the user to idp login set state to the unique id just generated
 
-	provider := chi.URLParam(r, "provider")
-	var auth_uri string
-	var ok bool
-	if auth_uri, ok = oauth_providers[provider]; !ok {
-		app.badRequestResponse(w, r, fmt.Errorf("%s identity provider is not supported", provider))
-		return
-	}
-
 	state := uuid.New().String()
 	nonce := uuid.New().String()
 	app.sessionManager.Put(r.Context(), "oidc_state", state)
 	app.sessionManager.Put(r.Context(), "nonce", nonce)
-	http.Redirect(w, r, fmt.Sprintf(auth_uri, app.clientID, state), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf(authURL, app.clientID, redirectURL, state, nonce), http.StatusSeeOther)
 }
 
 func (app *application) handleLogout(w http.ResponseWriter, r *http.Request) {
@@ -56,8 +50,8 @@ func (app *application) handleCallback(w http.ResponseWriter, r *http.Request) {
 	// read the state from the query string
 	// read the uuid from the cookie
 	// verify they both match if not reject the request
-
 	// if they match then exchange the code for the tokens
+
 	// decode the id_token to read the user info
 	// verify if user exists in the database if not add them to database
 	// also store the access token in a database using a session manager like alexedwards/scs for subsequent interactions
@@ -66,15 +60,20 @@ func (app *application) handleCallback(w http.ResponseWriter, r *http.Request) {
 	// if not create it
 	// redirect the user to the homepage
 
-	state1 := chi.URLParam(r, "state")
-	state2, ok := app.sessionManager.Get(r.Context(), "oidc_state").(string)
-	if !ok || state1 != state2 {
-		app.errorResponse(w, r, http.StatusForbidden, "")
+	stateFromURLParam := chi.URLParam(r, "state")
+	stateFromSession, ok := app.sessionManager.Get(r.Context(), "oidc_state").(string)
+	if !ok || stateFromSession != stateFromURLParam {
+		app.errorResponse(w, r, http.StatusForbidden, "Invalid State")
 		return
 	}
 	code := chi.URLParam(r, "code")
 
 	// exchange code for the access tokens
+	tokens, err := service.GetAccessTokens(app.clientID, app.clientSecret, code, redirectURL, grantType)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
 
 }
 
